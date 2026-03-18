@@ -1,134 +1,103 @@
 {
-    "fuelone": [
-        "Fuelone Whey Protein",
-        "Fuelone Max Whey Protein",
-        "Fuelone Alpha Whey Protein"
-    ],
-    "muscleblaze": [
-        "MuscleBlaze Biozyme Whey Protein",
-        "MuscleBlaze Iso Zero",
-        "MuscleBlaze Raw Whey Protein",
-        "MuscleBlaze Whey Gold",
-        "MuscleBlaze Whey Active",
-        "MuscleBlaze Super Gainer XXL"
-    ],
-    "naturaltein": [
-        "Naturaltein Yeast Protein",
-        "Naturaltein Whey Protein",
-        "Naturaltein Plant Protein"
-    ],
-    "superyou": [
-        "Superyou Fermented Yeast Protein"
-    ],
-    "optimumnutrition": [
-        "ON Gold Standard 100% Whey",
-        "ON Gold Standard Isolate",
-        "ON Platinum Hydro Whey",
-        "ON Serious Mass",
-        "ON Gold Standard Casein"
-    ],
-    "myprotein": [
-        "Myprotein Impact Whey Protein",
-        "Myprotein Impact Whey Isolate",
-        "Myprotein Clear Whey Isolate",
-        "Myprotein Slow-Release Casein"
-    ],
-    "dymatize": [
-        "Dymatize ISO 100",
-        "Dymatize Elite 100% Whey",
-        "Dymatize Super Mass Gainer"
-    ],
-    "muscletech": [
-        "MuscleTech NitroTech Whey Protein",
-        "MuscleTech NitroTech Whey Gold",
-        "MuscleTech NitroTech Ripped",
-        "MuscleTech NitroTech Casein Gold",
-        "MuscleTech Mass Tech"
-    ],
-    "asitisnutrition": [
-        "AS-IT-IS Whey Protein Concentrate",
-        "AS-IT-IS Whey Protein Isolate",
-        "AS-IT-IS Raw Whey Protein"
-    ],
-    "nutrabay": [
-        "Nutrabay Gold 100% Whey Protein",
-        "Nutrabay Gold Whey Protein Isolate",
-        "Nutrabay Pure Raw Whey Protein",
-        "Nutrabay Gold Vital Whey"
-    ],
-    "bigmuscles": [
-        "Bigmuscles Nutrition Premium Gold",
-        "Bigmuscles Nutrition Crude Whey",
-        "Bigmuscles Nutrition Zero Protein"
-    ],
-    "nakpro": [
-        "Nakpro Platinum Whey Protein Isolate",
-        "Nakpro Gold Whey Protein",
-        "Nakpro Raw Whey Protein",
-        "Nakpro Perform Whey Protein"
-    ],
-    "isopure": [
-        "Isopure Zero Carb Whey Isolate",
-        "Isopure Low Carb Whey Isolate",
-        "Isopure Dutch Chocolate"
-    ],
-    "bsn": [
-        "BSN Syntha-6",
-        "BSN Syntha-6 Isolate",
-        "BSN Lean Dessert Protein"
-    ],
-    "gnc": [
-        "GNC Pro Performance 100% Whey",
-        "GNC AMP Gold 100% Whey",
-        "GNC AMP Wheybolic"
-    ],
-    "oziva": [
-        "OZiva Protein & Herbs for Men",
-        "OZiva Protein & Herbs for Women",
-        "OZiva Plant Protein"
-    ],
-    "boldfit": [
-        "Boldfit Whey Protein Concentrate",
-        "Boldfit Raw Whey Protein",
-        "Boldfit Whey Isolate"
-    ],
-    "healthfarm": [
-        "HealthFarm Muscle Whey Protein",
-        "HealthFarm MuscleFarm Whey Isolate",
-        "HealthFarm Raw Whey Protein"
-    ],
-    "labrada": [
-        "Labrada 100% Whey Protein",
-        "Labrada Muscle Mass Gainer",
-        "Labrada Lean Body"
-    ],
-    "cellucor": [
-        "Cellucor Cor-Performance Whey",
-        "Cellucor Cor-Performance Isolate"
-    ],
-    "protyze": [
-        "Protyze Anytime Clear Whey",
-        "Protyze Whey Isolate"
-    ],
-    "abbzorb": [
-        "Abbzorb Raw Whey Protein",
-        "Abbzorb Whey Protein Isolate"
-    ],
-    "fastandup": [
-        "Fast&Up Whey Essentials",
-        "Fast&Up Whey Advanced",
-        "Fast&Up Plant Protein"
-    ],
-    "sixpacknutrition": [
-        "Six Pack Nutrition 100% Whey",
-        "Six Pack Nutrition Whey Isolate"
-    ],
-    "universalnutrition": [
-        "Universal Nutrition Ultra Whey Pro",
-        "Universal Nutrition Animal Whey"
-    ],
-    "gatsport": [
-        "GAT Sport Whey Protein",
-        "GAT Sport Nitra Whey"
-    ]
+  "muscleblaze": [
+    "MuscleBlaze Biozyme Performance Whey",
+    "MuscleBlaze Biozyme Iso Zero",
+    "MuscleBlaze Raw Whey Protein",
+    "MuscleBlaze Whey Gold",
+    "MuscleBlaze Whey Active",
+    "MuscleBlaze Beginner's Whey Protein"
+  ],
+  "optimumnutrition": [
+    "ON Gold Standard 100% Whey",
+    "ON Gold Standard Isolate",
+    "ON Platinum Hydro Whey",
+    "ON Performance Whey"
+  ],
+  "myprotein": [
+    "MyProtein Impact Whey Protein",
+    "MyProtein Impact Whey Isolate",
+    "MyProtein Clear Whey Isolate",
+    "MyProtein THE Whey",
+    "MyProtein Hydrolysed Whey"
+  ],
+  "dymatize": [
+    "Dymatize ISO 100",
+    "Dymatize Elite 100% Whey"
+  ],
+  "muscletech": [
+    "MuscleTech NitroTech Whey Protein",
+    "MuscleTech NitroTech Ripped",
+    "MuscleTech NitroTech Elite"
+  ],
+  "asitisnutrition": [
+    "AS-IT-IS Whey Protein Concentrate",
+    "AS-IT-IS Whey Protein Isolate",
+    "AS-IT-IS Raw Whey Protein",
+    "AS-IT-IS Atom Whey Protein"
+  ],
+  "nutrabay": [
+    "Nutrabay Gold 100% Whey Protein",
+    "Nutrabay Gold Whey Protein Isolate",
+    "Nutrabay Pure Raw Whey Protein",
+    "Nutrabay Gold Tri-Blend Whey Protein"
+  ],
+  "nakpro": [
+    "Nakpro Platinum Whey Protein Isolate",
+    "Nakpro Gold Whey Protein",
+    "Nakpro Raw Whey Protein",
+    "Nakpro Perform Whey Protein",
+    "Nakpro Hydro Whey Protein"
+  ],
+  "avvatar": [
+    "Avvatar Absolute 100% Whey Protein",
+    "Avvatar Whey Protein Isolate",
+    "Avvatar Isorich Whey Protein Isolate"
+  ],
+  "isopure": [
+    "Isopure Zero Carb Whey Isolate",
+    "Isopure Low Carb Whey Isolate"
+  ],
+  "gnc": [
+    "GNC Pro Performance 100% Whey",
+    "GNC AMP Gold 100% Whey",
+    "GNC AMP Wheybolic"
+  ],
+  "labrada": [
+    "Labrada 100% Whey Protein",
+    "Labrada Iso Lean Pro"
+  ],
+  "ruleone": [
+    "Rule One R1 Whey Blend",
+    "Rule One R1 Protein Isolate"
+  ],
+  "cellucor": [
+    "Cellucor Cor-Performance Whey",
+    "Cellucor Cor-Performance Isolate"
+  ],
+  "protyze": [
+    "Protyze Whey Isolate",
+    "Protyze Anytime Clear Whey"
+  ],
+  "fastandup": [
+    "Fast&Up Whey Essentials",
+    "Fast&Up Whey Advanced",
+    "Fast&Up Whey Isolate"
+  ],
+  "fuelone": [
+    "FuelOne Whey Protein",
+    "FuelOne Whey Max",
+    "FuelOne Whey Protein Alpha"
+  ],
+  "boldfit": [
+    "Boldfit Whey Protein Concentrate",
+    "Boldfit Whey Isolate"
+  ],
+  "healthfarm": [
+    "HealthFarm Whey Protein",
+    "HealthFarm Whey Isolate"
+  ],
+  "bigmuscles": [
+    "BigMuscles Real Whey",
+    "BigMuscles Premium Gold Whey"
+  ]
 }
