@@ -1,103 +1,163 @@
-{
-  "muscleblaze": [
-    "MuscleBlaze Biozyme Performance Whey",
-    "MuscleBlaze Biozyme Iso Zero",
-    "MuscleBlaze Raw Whey Protein",
-    "MuscleBlaze Whey Gold",
-    "MuscleBlaze Whey Active",
-    "MuscleBlaze Beginner's Whey Protein"
-  ],
-  "optimumnutrition": [
-    "ON Gold Standard 100% Whey",
-    "ON Gold Standard Isolate",
-    "ON Platinum Hydro Whey",
-    "ON Performance Whey"
-  ],
-  "myprotein": [
-    "MyProtein Impact Whey Protein",
-    "MyProtein Impact Whey Isolate",
-    "MyProtein Clear Whey Isolate",
-    "MyProtein THE Whey",
-    "MyProtein Hydrolysed Whey"
-  ],
-  "dymatize": [
-    "Dymatize ISO 100",
-    "Dymatize Elite 100% Whey"
-  ],
-  "muscletech": [
-    "MuscleTech NitroTech Whey Protein",
-    "MuscleTech NitroTech Ripped",
-    "MuscleTech NitroTech Elite"
-  ],
-  "asitisnutrition": [
-    "AS-IT-IS Whey Protein Concentrate",
-    "AS-IT-IS Whey Protein Isolate",
-    "AS-IT-IS Raw Whey Protein",
-    "AS-IT-IS Atom Whey Protein"
-  ],
-  "nutrabay": [
-    "Nutrabay Gold 100% Whey Protein",
-    "Nutrabay Gold Whey Protein Isolate",
-    "Nutrabay Pure Raw Whey Protein",
-    "Nutrabay Gold Tri-Blend Whey Protein"
-  ],
-  "nakpro": [
-    "Nakpro Platinum Whey Protein Isolate",
-    "Nakpro Gold Whey Protein",
-    "Nakpro Raw Whey Protein",
-    "Nakpro Perform Whey Protein",
-    "Nakpro Hydro Whey Protein"
-  ],
-  "avvatar": [
-    "Avvatar Absolute 100% Whey Protein",
-    "Avvatar Whey Protein Isolate",
-    "Avvatar Isorich Whey Protein Isolate"
-  ],
-  "isopure": [
-    "Isopure Zero Carb Whey Isolate",
-    "Isopure Low Carb Whey Isolate"
-  ],
-  "gnc": [
-    "GNC Pro Performance 100% Whey",
-    "GNC AMP Gold 100% Whey",
-    "GNC AMP Wheybolic"
-  ],
-  "labrada": [
-    "Labrada 100% Whey Protein",
-    "Labrada Iso Lean Pro"
-  ],
-  "ruleone": [
-    "Rule One R1 Whey Blend",
-    "Rule One R1 Protein Isolate"
-  ],
-  "cellucor": [
-    "Cellucor Cor-Performance Whey",
-    "Cellucor Cor-Performance Isolate"
-  ],
-  "protyze": [
-    "Protyze Whey Isolate",
-    "Protyze Anytime Clear Whey"
-  ],
-  "fastandup": [
-    "Fast&Up Whey Essentials",
-    "Fast&Up Whey Advanced",
-    "Fast&Up Whey Isolate"
-  ],
-  "fuelone": [
-    "FuelOne Whey Protein",
-    "FuelOne Whey Max",
-    "FuelOne Whey Protein Alpha"
-  ],
-  "boldfit": [
-    "Boldfit Whey Protein Concentrate",
-    "Boldfit Whey Isolate"
-  ],
-  "healthfarm": [
-    "HealthFarm Whey Protein",
-    "HealthFarm Whey Isolate"
-  ],
-  "bigmuscles": [
-    "BigMuscles Real Whey",
-    "BigMuscles Premium Gold Whey"
-  ]
-}
+[
+  {
+    "brand": "muscleblaze",
+    "products": [
+      "MuscleBlaze Biozyme Performance Whey",
+      "MuscleBlaze Biozyme Iso Zero",
+      "MuscleBlaze Raw Whey Protein",
+      "MuscleBlaze Whey Gold",
+      "MuscleBlaze Whey Active",
+      "MuscleBlaze Beginner's Whey Protein"
+    ]
+  },
+  {
+    "brand": "optimumnutrition",
+    "products": [
+      "ON Gold Standard 100% Whey",
+      "ON Gold Standard Isolate",
+      "ON Platinum Hydro Whey",
+      "ON Performance Whey"
+    ]
+  },
+  {
+    "brand": "myprotein",
+    "products": [
+      "MyProtein Impact Whey Protein",
+      "MyProtein Impact Whey Isolate",
+      "MyProtein Clear Whey Isolate",
+      "MyProtein THE Whey",
+      "MyProtein Hydrolysed Whey"
+    ]
+  },
+  {
+    "brand": "dymatize",
+    "products": [
+      "Dymatize ISO 100",
+      "Dymatize Elite 100% Whey"
+    ]
+  },
+  {
+    "brand": "muscletech",
+    "products": [
+      "MuscleTech NitroTech Whey Protein",
+      "MuscleTech NitroTech Ripped",
+      "MuscleTech NitroTech Elite"
+    ]
+  },
+  {
+    "brand": "asitisnutrition",
+    "products": [
+      "AS-IT-IS Whey Protein Concentrate",
+      "AS-IT-IS Whey Protein Isolate",
+      "AS-IT-IS Raw Whey Protein",
+      "AS-IT-IS Atom Whey Protein"
+    ]
+  },
+  {
+    "brand": "nutrabay",
+    "products": [
+      "Nutrabay Gold 100% Whey Protein",
+      "Nutrabay Gold Whey Protein Isolate",
+      "Nutrabay Pure Raw Whey Protein",
+      "Nutrabay Gold Tri-Blend Whey Protein"
+    ]
+  },
+  {
+    "brand": "nakpro",
+    "products": [
+      "Nakpro Platinum Whey Protein Isolate",
+      "Nakpro Gold Whey Protein",
+      "Nakpro Raw Whey Protein",
+      "Nakpro Perform Whey Protein",
+      "Nakpro Hydro Whey Protein"
+    ]
+  },
+  {
+    "brand": "avvatar",
+    "products": [
+      "Avvatar Absolute 100% Whey Protein",
+      "Avvatar Whey Protein Isolate",
+      "Avvatar Isorich Whey Protein Isolate"
+    ]
+  },
+  {
+    "brand": "isopure",
+    "products": [
+      "Isopure Zero Carb Whey Isolate",
+      "Isopure Low Carb Whey Isolate"
+    ]
+  },
+  {
+    "brand": "gnc",
+    "products": [
+      "GNC Pro Performance 100% Whey",
+      "GNC AMP Gold 100% Whey",
+      "GNC AMP Wheybolic"
+    ]
+  },
+  {
+    "brand": "labrada",
+    "products": [
+      "Labrada 100% Whey Protein",
+      "Labrada Iso Lean Pro"
+    ]
+  },
+  {
+    "brand": "ruleone",
+    "products": [
+      "Rule One R1 Whey Blend",
+      "Rule One R1 Protein Isolate"
+    ]
+  },
+  {
+    "brand": "cellucor",
+    "products": [
+      "Cellucor Cor-Performance Whey",
+      "Cellucor Cor-Performance Isolate"
+    ]
+  },
+  {
+    "brand": "protyze",
+    "products": [
+      "Protyze Whey Isolate",
+      "Protyze Anytime Clear Whey"
+    ]
+  },
+  {
+    "brand": "fastandup",
+    "products": [
+      "Fast&Up Whey Essentials",
+      "Fast&Up Whey Advanced",
+      "Fast&Up Whey Isolate"
+    ]
+  },
+  {
+    "brand": "fuelone",
+    "products": [
+      "FuelOne Whey Protein",
+      "FuelOne Whey Max",
+      "FuelOne Whey Protein Alpha"
+    ]
+  },
+  {
+    "brand": "boldfit",
+    "products": [
+      "Boldfit Whey Protein Concentrate",
+      "Boldfit Whey Isolate"
+    ]
+  },
+  {
+    "brand": "healthfarm",
+    "products": [
+      "HealthFarm Whey Protein",
+      "HealthFarm Whey Isolate"
+    ]
+  },
+  {
+    "brand": "bigmuscles",
+    "products": [
+      "BigMuscles Real Whey",
+      "BigMuscles Premium Gold Whey"
+    ]
+  }
+]
