@@ -35,16 +35,16 @@ function Home() {
   })
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#0a0a0a' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f8fafc' }}>
       {/* Navigation */}
       <Box
         sx={{
           position: 'sticky',
           top: 0,
           zIndex: 100,
-          backdropFilter: 'blur(20px)',
-          bgcolor: 'rgba(10, 10, 10, 0.8)',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          bgcolor: 'white',
+          borderBottom: '1px solid #e2e8f0',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
         }}
       >
         <Container maxWidth="lg">
@@ -55,7 +55,7 @@ function Home() {
                   width: 40,
                   height: 40,
                   borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)',
+                  background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -63,15 +63,15 @@ function Home() {
               >
                 <ScienceIcon sx={{ color: 'white', fontSize: 22 }} />
               </Box>
-              <Typography variant="h6" sx={{ color: 'white', fontWeight: 800, letterSpacing: '-0.5px' }}>
+              <Typography variant="h6" sx={{ color: '#1e293b', fontWeight: 800, letterSpacing: '-0.5px' }}>
                 YourLabTest
               </Typography>
               <Chip
                 label="BETA"
                 size="small"
                 sx={{
-                  bgcolor: 'rgba(99, 102, 241, 0.2)',
-                  color: '#818cf8',
+                  bgcolor: '#eef2ff',
+                  color: '#6366f1',
                   fontSize: '10px',
                   fontWeight: 700,
                   height: 20,
@@ -79,23 +79,23 @@ function Home() {
               />
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Button sx={{ color: 'rgba(255,255,255,0.7)', textTransform: 'none', fontWeight: 500 }}>
+              <Button sx={{ color: '#64748b', textTransform: 'none', fontWeight: 500 }}>
                 How it Works
               </Button>
-              <Button sx={{ color: 'rgba(255,255,255,0.7)', textTransform: 'none', fontWeight: 500 }}>
+              <Button sx={{ color: '#64748b', textTransform: 'none', fontWeight: 500 }}>
                 Leaderboard
               </Button>
               <Button
                 variant="contained"
                 sx={{
-                  background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                  bgcolor: '#6366f1',
                   textTransform: 'none',
                   fontWeight: 600,
                   borderRadius: '100px',
                   px: 3,
-                  boxShadow: '0 0 20px rgba(99, 102, 241, 0.4)',
+                  boxShadow: '0 1px 3px rgba(99, 102, 241, 0.3)',
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                    bgcolor: '#4f46e5',
                   },
                 }}
               >
@@ -113,32 +113,9 @@ function Home() {
           overflow: 'hidden',
           pt: 10,
           pb: 12,
+          bgcolor: 'white',
         }}
       >
-        {/* Gradient orbs */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '-20%',
-            left: '-10%',
-            width: '50%',
-            height: '100%',
-            background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)',
-            pointerEvents: 'none',
-          }}
-        />
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '20%',
-            right: '-10%',
-            width: '40%',
-            height: '80%',
-            background: 'radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%)',
-            pointerEvents: 'none',
-          }}
-        />
-
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
           <Box sx={{ textAlign: 'center', maxWidth: 800, mx: 'auto' }}>
             {/* Trust badge */}
@@ -147,11 +124,11 @@ function Home() {
               label="Community-Funded Lab Testing"
               sx={{
                 mb: 3,
-                bgcolor: 'rgba(34, 197, 94, 0.1)',
-                color: '#4ade80',
-                border: '1px solid rgba(34, 197, 94, 0.3)',
+                bgcolor: '#ecfdf5',
+                color: '#059669',
+                border: '1px solid #a7f3d0',
                 fontWeight: 500,
-                '& .MuiChip-icon': { color: '#4ade80' },
+                '& .MuiChip-icon': { color: '#059669' },
               }}
             />
 
@@ -160,7 +137,7 @@ function Home() {
               sx={{
                 fontSize: { xs: '2.5rem', md: '4rem' },
                 fontWeight: 900,
-                color: 'white',
+                color: '#1e293b',
                 lineHeight: 1.1,
                 letterSpacing: '-2px',
                 mb: 3,
@@ -170,7 +147,7 @@ function Home() {
               <Box
                 component="span"
                 sx={{
-                  background: 'linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #f59e0b 100%)',
+                  background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   color: 'transparent',
@@ -185,7 +162,7 @@ function Home() {
             <Typography
               variant="h6"
               sx={{
-                color: 'rgba(255,255,255,0.6)',
+                color: '#64748b',
                 fontWeight: 400,
                 mb: 5,
                 maxWidth: 600,
@@ -204,14 +181,17 @@ function Home() {
                 size="large"
                 endIcon={<KeyboardArrowRightIcon />}
                 sx={{
-                  background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                  bgcolor: '#6366f1',
                   textTransform: 'none',
                   fontWeight: 600,
                   borderRadius: '100px',
                   px: 4,
                   py: 1.5,
                   fontSize: '1rem',
-                  boxShadow: '0 0 30px rgba(99, 102, 241, 0.5)',
+                  boxShadow: '0 1px 3px rgba(99, 102, 241, 0.3)',
+                  '&:hover': {
+                    bgcolor: '#4f46e5',
+                  },
                 }}
               >
                 Start Voting
@@ -220,16 +200,16 @@ function Home() {
                 variant="outlined"
                 size="large"
                 sx={{
-                  borderColor: 'rgba(255,255,255,0.2)',
-                  color: 'white',
+                  borderColor: '#e2e8f0',
+                  color: '#475569',
                   textTransform: 'none',
                   fontWeight: 600,
                   borderRadius: '100px',
                   px: 4,
                   py: 1.5,
                   '&:hover': {
-                    borderColor: 'rgba(255,255,255,0.4)',
-                    bgcolor: 'rgba(255,255,255,0.05)',
+                    borderColor: '#cbd5e1',
+                    bgcolor: '#f8fafc',
                   },
                 }}
               >
@@ -256,12 +236,12 @@ function Home() {
                     <Box sx={{ color: '#6366f1' }}>{stat.icon}</Box>
                     <Typography
                       variant="h4"
-                      sx={{ color: 'white', fontWeight: 800, letterSpacing: '-1px' }}
+                      sx={{ color: '#1e293b', fontWeight: 800, letterSpacing: '-1px' }}
                     >
                       {stat.value}
                     </Typography>
                   </Box>
-                  <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
+                  <Typography sx={{ color: '#64748b', fontSize: '0.85rem' }}>
                     {stat.label}
                   </Typography>
                 </Box>
@@ -272,7 +252,7 @@ function Home() {
       </Box>
 
       {/* Trust Features */}
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="lg" sx={{ py: 6 }}>
         <Box
           sx={{
             display: 'grid',
@@ -285,33 +265,37 @@ function Home() {
               icon: <VerifiedIcon />,
               title: 'NABL Certified Labs',
               desc: 'All tests conducted by accredited laboratories',
-              color: '#22c55e',
+              color: '#059669',
+              bgColor: '#ecfdf5',
             },
             {
               icon: <GroupsIcon />,
               title: 'Community Powered',
               desc: 'You vote, you fund, you get the truth',
               color: '#6366f1',
+              bgColor: '#eef2ff',
             },
             {
               icon: <ScienceIcon />,
               title: 'Zero BS Guarantee',
               desc: 'No brand sponsorships, no hidden agendas',
-              color: '#ec4899',
+              color: '#db2777',
+              bgColor: '#fdf2f8',
             },
           ].map((feature, i) => (
             <Paper
               key={i}
+              elevation={0}
               sx={{
                 p: 3,
-                bgcolor: 'rgba(255,255,255,0.03)',
-                borderRadius: '20px',
-                border: '1px solid rgba(255,255,255,0.08)',
+                bgcolor: 'white',
+                borderRadius: '16px',
+                border: '1px solid #e2e8f0',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  bgcolor: 'rgba(255,255,255,0.05)',
-                  borderColor: 'rgba(255,255,255,0.15)',
+                  borderColor: '#cbd5e1',
                   transform: 'translateY(-4px)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                 },
               }}
             >
@@ -319,8 +303,8 @@ function Home() {
                 sx={{
                   width: 48,
                   height: 48,
-                  borderRadius: '14px',
-                  bgcolor: `${feature.color}15`,
+                  borderRadius: '12px',
+                  bgcolor: feature.bgColor,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -330,10 +314,10 @@ function Home() {
               >
                 {feature.icon}
               </Box>
-              <Typography variant="h6" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
+              <Typography variant="h6" sx={{ color: '#1e293b', fontWeight: 700, mb: 1 }}>
                 {feature.title}
               </Typography>
-              <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>
+              <Typography sx={{ color: '#64748b', fontSize: '0.9rem' }}>
                 {feature.desc}
               </Typography>
             </Paper>
@@ -345,15 +329,15 @@ function Home() {
       <Container maxWidth="lg" sx={{ py: 6 }}>
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <TrendingUpIcon sx={{ color: '#ec4899', fontSize: 20 }} />
-            <Typography sx={{ color: '#ec4899', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: 1 }}>
+            <TrendingUpIcon sx={{ color: '#6366f1', fontSize: 20 }} />
+            <Typography sx={{ color: '#6366f1', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: 1 }}>
               Trending Now
             </Typography>
           </Box>
-          <Typography variant="h4" sx={{ color: 'white', fontWeight: 800, letterSpacing: '-1px', mb: 1 }}>
+          <Typography variant="h4" sx={{ color: '#1e293b', fontWeight: 800, letterSpacing: '-1px', mb: 1 }}>
             Whey Protein Testing Queue
           </Typography>
-          <Typography sx={{ color: 'rgba(255,255,255,0.5)', maxWidth: 500 }}>
+          <Typography sx={{ color: '#64748b', maxWidth: 500 }}>
             Vote for the products you want tested. Top voted products get tested first.
           </Typography>
         </Box>
@@ -368,28 +352,27 @@ function Home() {
             mb: 4,
             maxWidth: 500,
             '& .MuiOutlinedInput-root': {
-              bgcolor: 'rgba(255,255,255,0.05)',
+              bgcolor: 'white',
               borderRadius: '100px',
-              color: 'white',
               '& fieldset': {
-                borderColor: 'rgba(255,255,255,0.1)',
+                borderColor: '#e2e8f0',
               },
               '&:hover fieldset': {
-                borderColor: 'rgba(255,255,255,0.2)',
+                borderColor: '#cbd5e1',
               },
               '&.Mui-focused fieldset': {
                 borderColor: '#6366f1',
               },
             },
             '& .MuiInputBase-input::placeholder': {
-              color: 'rgba(255,255,255,0.4)',
+              color: '#94a3b8',
             },
           }}
           slotProps={{
             input: {
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ color: 'rgba(255,255,255,0.4)' }} />
+                  <SearchIcon sx={{ color: '#94a3b8' }} />
                 </InputAdornment>
               ),
             },
@@ -402,8 +385,8 @@ function Home() {
             label={`${filteredProtein.length} brands`}
             size="small"
             sx={{
-              bgcolor: 'rgba(99, 102, 241, 0.15)',
-              color: '#818cf8',
+              bgcolor: '#eef2ff',
+              color: '#6366f1',
               fontWeight: 600,
             }}
           />
@@ -411,8 +394,8 @@ function Home() {
             label={`${filteredProtein.reduce((acc, item) => acc + item.products.length, 0)} products`}
             size="small"
             sx={{
-              bgcolor: 'rgba(236, 72, 153, 0.15)',
-              color: '#f472b6',
+              bgcolor: '#fdf2f8',
+              color: '#db2777',
               fontWeight: 600,
             }}
           />
@@ -429,17 +412,18 @@ function Home() {
           {filteredProtein.map((item) => (
             <Paper
               key={item.brand}
+              elevation={0}
               onClick={() => setSelectedBrand(selectedBrand === item.brand ? null : item.brand)}
               sx={{
                 p: 2.5,
-                bgcolor: selectedBrand === item.brand ? 'rgba(99, 102, 241, 0.1)' : 'rgba(255,255,255,0.03)',
+                bgcolor: selectedBrand === item.brand ? '#eef2ff' : 'white',
                 borderRadius: '16px',
-                border: selectedBrand === item.brand ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid rgba(255,255,255,0.08)',
+                border: selectedBrand === item.brand ? '1px solid #6366f1' : '1px solid #e2e8f0',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 '&:hover': {
-                  bgcolor: 'rgba(255,255,255,0.06)',
-                  borderColor: 'rgba(255,255,255,0.15)',
+                  borderColor: '#cbd5e1',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                 },
               }}
             >
@@ -458,19 +442,19 @@ function Home() {
                   {item.displayName.charAt(0)}
                 </Avatar>
                 <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ color: 'white', fontWeight: 700, fontSize: '1.1rem' }}>
+                  <Typography sx={{ color: '#1e293b', fontWeight: 700, fontSize: '1.1rem' }}>
                     {item.displayName}
                   </Typography>
-                  <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
+                  <Typography sx={{ color: '#64748b', fontSize: '0.85rem' }}>
                     {item.products.length} products
                   </Typography>
                 </Box>
                 <IconButton
                   size="small"
                   sx={{
-                    bgcolor: 'rgba(99, 102, 241, 0.1)',
-                    color: '#818cf8',
-                    '&:hover': { bgcolor: 'rgba(99, 102, 241, 0.2)' },
+                    bgcolor: '#eef2ff',
+                    color: '#6366f1',
+                    '&:hover': { bgcolor: '#e0e7ff' },
                   }}
                 >
                   <KeyboardArrowRightIcon
@@ -484,7 +468,7 @@ function Home() {
 
               {/* Products list - shown when expanded */}
               {selectedBrand === item.brand && (
-                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #e2e8f0' }}>
                   {item.products.map((product, idx) => (
                     <Box
                       key={product}
@@ -493,10 +477,10 @@ function Home() {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         py: 1.5,
-                        borderBottom: idx < item.products.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                        borderBottom: idx < item.products.length - 1 ? '1px solid #f1f5f9' : 'none',
                       }}
                     >
-                      <Typography sx={{ color: 'white', fontSize: '0.9rem', fontWeight: 500, flex: 1 }}>
+                      <Typography sx={{ color: '#1e293b', fontSize: '0.9rem', fontWeight: 500, flex: 1 }}>
                         {product}
                       </Typography>
                       <Button
@@ -506,13 +490,13 @@ function Home() {
                           px: 2,
                           py: 0.5,
                           borderRadius: '100px',
-                          bgcolor: 'rgba(99, 102, 241, 0.15)',
-                          color: '#818cf8',
+                          bgcolor: '#6366f1',
+                          color: 'white',
                           textTransform: 'none',
                           fontWeight: 600,
                           fontSize: '0.8rem',
                           '&:hover': {
-                            bgcolor: 'rgba(99, 102, 241, 0.25)',
+                            bgcolor: '#4f46e5',
                           },
                         }}
                       >
@@ -528,15 +512,16 @@ function Home() {
 
         {filteredProtein.length === 0 && (
           <Paper
+            elevation={0}
             sx={{
               p: 6,
               textAlign: 'center',
-              bgcolor: 'rgba(255,255,255,0.03)',
-              borderRadius: '20px',
-              border: '1px solid rgba(255,255,255,0.08)',
+              bgcolor: 'white',
+              borderRadius: '16px',
+              border: '1px solid #e2e8f0',
             }}
           >
-            <Typography sx={{ color: 'rgba(255,255,255,0.5)' }}>
+            <Typography sx={{ color: '#64748b' }}>
               No products found matching "{searchTerm}"
             </Typography>
           </Paper>
@@ -547,12 +532,12 @@ function Home() {
       <Box sx={{ py: 10 }}>
         <Container maxWidth="md">
           <Paper
+            elevation={0}
             sx={{
               p: { xs: 4, md: 6 },
               textAlign: 'center',
-              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%)',
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
               borderRadius: '24px',
-              border: '1px solid rgba(255,255,255,0.1)',
             }}
           >
             <Typography
@@ -561,7 +546,7 @@ function Home() {
             >
               Can't find your supplement?
             </Typography>
-            <Typography sx={{ color: 'rgba(255,255,255,0.6)', mb: 4, maxWidth: 400, mx: 'auto' }}>
+            <Typography sx={{ color: 'rgba(255,255,255,0.8)', mb: 4, maxWidth: 400, mx: 'auto' }}>
               Submit a request and rally the community to get it tested.
             </Typography>
             <Button
@@ -569,14 +554,14 @@ function Home() {
               size="large"
               sx={{
                 background: 'white',
-                color: '#0a0a0a',
+                color: '#6366f1',
                 textTransform: 'none',
                 fontWeight: 700,
                 borderRadius: '100px',
                 px: 5,
                 py: 1.5,
                 '&:hover': {
-                  background: 'rgba(255,255,255,0.9)',
+                  background: '#f8fafc',
                 },
               }}
             >
@@ -587,7 +572,7 @@ function Home() {
       </Box>
 
       {/* Footer */}
-      <Box sx={{ borderTop: '1px solid rgba(255,255,255,0.08)', py: 4 }}>
+      <Box sx={{ borderTop: '1px solid #e2e8f0', py: 4, bgcolor: 'white' }}>
         <Container maxWidth="lg">
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -596,7 +581,7 @@ function Home() {
                   width: 32,
                   height: 32,
                   borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)',
+                  background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -604,11 +589,11 @@ function Home() {
               >
                 <ScienceIcon sx={{ color: 'white', fontSize: 18 }} />
               </Box>
-              <Typography sx={{ color: 'white', fontWeight: 700 }}>
+              <Typography sx={{ color: '#1e293b', fontWeight: 700 }}>
                 YourLabTest
               </Typography>
             </Box>
-            <Typography sx={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' }}>
+            <Typography sx={{ color: '#64748b', fontSize: '0.85rem' }}>
               Made with transparency for the fitness community
             </Typography>
           </Box>
