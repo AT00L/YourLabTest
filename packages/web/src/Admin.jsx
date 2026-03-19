@@ -114,7 +114,7 @@ function Admin() {
       await api.post('/product/addProduct', {
         name: productName,
         category: selectedCategory,
-        brand: selectedBrand
+        brandId: selectedBrand
       })
 
       setSnackbar({ open: true, message: 'Product created successfully!', severity: 'success' })
@@ -343,7 +343,7 @@ function Admin() {
                         <Typography sx={{ color: '#94a3b8' }}>Select a brand</Typography>
                       </MenuItem>
                       {brands.map((brand) => (
-                        <MenuItem key={brand._id} value={brand.name}>
+                        <MenuItem key={brand.brandId} value={brand.brandId}>
                           {brand.name}
                         </MenuItem>
                       ))}

@@ -5,8 +5,8 @@ const router = express.Router();
 router.use(express.json())
 
 router.post("/addProduct", async (req, res) => {
-    const { name, category, brand } = req.body
-    const response = await addProduct({ name, category, brand })
+    const { name, category, brandId } = req.body
+    const response = await addProduct({ name, category, brandId })
     res.json(response)
 })
 

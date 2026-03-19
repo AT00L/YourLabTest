@@ -1,11 +1,21 @@
-import { mongoInatialize } from "../server.js";
+import { mongoInatialize } from "../server.js"
 
-export async function addProduct({ name, category, brand }) {
+export async function addProduct({ name, category, brandId }) {
     const db = await mongoInatialize()
+    const brand = await db.collection("brands").findOne({ brandId, category })
+    if (!brand) {
+        return {
+            status: false,
+            message: "Brand not found"
+        }
+    }
     await db.collection("products").insertOne({
         name,
         category,
-        brand,
+        brand: {
+            brandId: brand.brandId,
+            name: brand.name
+        },
         createdAt: new Date()
     })
     return {
@@ -29,17 +39,27 @@ function toTitleCase(str) {
     ).join(' ')
 }
 
+function toBrandId(str) {
+    return str.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '')
+}
+
 export async function createBrand({ name, category }) {
     const db = await mongoInatialize()
     const brandName = toTitleCase(name.trim())
-    const existing = await db.collection("brands").findOne({ name: brandName, category })
+    const brandId = toBrandId(name.trim())
+    const existing = await db.collection("brands").findOne({ brandId, category })
     if (existing) {
         return {
             status: false,
             message: "Brand already exists for this category"
         }
     }
-    await db.collection("brands").insertOne({ name: brandName, category, createdAt: new Date() })
+    await db.collection("brands").insertOne({
+        name: brandName,
+        brandId,
+        category,
+        createdAt: new Date()
+    })
     return {
         status: true,
         message: "Brand created successfully"
