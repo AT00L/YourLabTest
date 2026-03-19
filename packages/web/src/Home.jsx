@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { protein } from './protein'
+import { useState, useEffect } from 'react'
+import api from './api'
 import {
   Container,
   Typography,
@@ -25,9 +25,32 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedBrand, setSelectedBrand] = useState(null)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const filteredProtein = protein.filter((item) => {
-    const brandMatch = item.brand.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const fetchProducts = async (category, brandIds) => {
+    setLoading(true)
+    try {
+      const body = {}
+      if (category) body.category = category
+      if (brandIds && brandIds.length > 0) body.brandIds = brandIds
+      const response = await api.post('/product/getProducts', body)
+      setProducts(response.data.data || [])
+    } catch (error) {
+      console.error('Failed to fetch products:', error)
+      setProducts([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const filteredProducts = products.filter((item) => {
+    const brandMatch = item.brandId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.displayName.toLowerCase().includes(searchTerm.toLowerCase())
     const productMatch = item.products.some((product) =>
       product.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -227,8 +250,8 @@ function Home() {
               }}
             >
               {[
-                { value: `${protein.length}`, label: 'Brands Listed', icon: <LocalFireDepartmentIcon sx={{ fontSize: 18 }} /> },
-                { value: `${protein.reduce((acc, item) => acc + item.products.length, 0)}`, label: 'Products', icon: <AutoAwesomeIcon sx={{ fontSize: 18 }} /> },
+                { value: `${products.length}`, label: 'Brands Listed', icon: <LocalFireDepartmentIcon sx={{ fontSize: 18 }} /> },
+                { value: `${products.reduce((acc, item) => acc + item.products.length, 0)}`, label: 'Products', icon: <AutoAwesomeIcon sx={{ fontSize: 18 }} /> },
                 { value: '100%', label: 'Transparent', icon: <VerifiedIcon sx={{ fontSize: 18 }} /> },
               ].map((stat, i) => (
                 <Box key={i} sx={{ textAlign: 'center' }}>
@@ -382,7 +405,7 @@ function Home() {
         {/* Results count */}
         <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Chip
-            label={`${filteredProtein.length} brands`}
+            label={`${filteredProducts.length} brands`}
             size="small"
             sx={{
               bgcolor: '#eef2ff',
@@ -391,7 +414,7 @@ function Home() {
             }}
           />
           <Chip
-            label={`${filteredProtein.reduce((acc, item) => acc + item.products.length, 0)} products`}
+            label={`${filteredProducts.reduce((acc, item) => acc + item.products.length, 0)} products`}
             size="small"
             sx={{
               bgcolor: '#fdf2f8',
@@ -402,6 +425,20 @@ function Home() {
         </Box>
 
         {/* Brand Cards Grid */}
+        {loading ? (
+          <Paper
+            elevation={0}
+            sx={{
+              p: 6,
+              textAlign: 'center',
+              bgcolor: 'white',
+              borderRadius: '16px',
+              border: '1px solid #e2e8f0',
+            }}
+          >
+            <Typography sx={{ color: '#64748b' }}>Loading products...</Typography>
+          </Paper>
+        ) : (
         <Box
           sx={{
             display: 'grid',
@@ -409,16 +446,16 @@ function Home() {
             gap: 2,
           }}
         >
-          {filteredProtein.map((item) => (
+          {filteredProducts.map((item) => (
             <Paper
-              key={item.brand}
+              key={item.brandId}
               elevation={0}
-              onClick={() => setSelectedBrand(selectedBrand === item.brand ? null : item.brand)}
+              onClick={() => setSelectedBrand(selectedBrand === item.brandId ? null : item.brandId)}
               sx={{
                 p: 2.5,
-                bgcolor: selectedBrand === item.brand ? '#eef2ff' : 'white',
+                bgcolor: selectedBrand === item.brandId ? '#eef2ff' : 'white',
                 borderRadius: '16px',
-                border: selectedBrand === item.brand ? '1px solid #6366f1' : '1px solid #e2e8f0',
+                border: selectedBrand === item.brandId ? '1px solid #6366f1' : '1px solid #e2e8f0',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 '&:hover': {
@@ -459,7 +496,7 @@ function Home() {
                 >
                   <KeyboardArrowRightIcon
                     sx={{
-                      transform: selectedBrand === item.brand ? 'rotate(90deg)' : 'none',
+                      transform: selectedBrand === item.brandId ? 'rotate(90deg)' : 'none',
                       transition: 'transform 0.2s',
                     }}
                   />
@@ -467,7 +504,7 @@ function Home() {
               </Box>
 
               {/* Products list - shown when expanded */}
-              {selectedBrand === item.brand && (
+              {selectedBrand === item.brandId && (
                 <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #e2e8f0' }}>
                   {item.products.map((product, idx) => (
                     <Box
@@ -509,8 +546,9 @@ function Home() {
             </Paper>
           ))}
         </Box>
+        )}
 
-        {filteredProtein.length === 0 && (
+        {!loading && filteredProducts.length === 0 && (
           <Paper
             elevation={0}
             sx={{

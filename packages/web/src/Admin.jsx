@@ -16,10 +16,28 @@ import {
   MenuItem,
   OutlinedInput,
   CircularProgress,
+  InputAdornment,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import AddIcon from '@mui/icons-material/Add'
 import ScienceIcon from '@mui/icons-material/Science'
+import SearchIcon from '@mui/icons-material/Search'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import ClearIcon from '@mui/icons-material/Clear'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 const CATEGORIES = [
   'Protein',
@@ -40,6 +58,138 @@ function Admin() {
   const [brandsLoading, setBrandsLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
+
+  // Products list state
+  const [products, setProducts] = useState([])
+  const [productsLoading, setProductsLoading] = useState(true)
+  const [filterCategory, setFilterCategory] = useState('')
+  const [filterBrandId, setFilterBrandId] = useState('')
+  const [filterBrands, setFilterBrands] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedIds, setSelectedIds] = useState([])
+  const [editDialog, setEditDialog] = useState({ open: false, product: null })
+  const [editForm, setEditForm] = useState({ name: '', category: '', brandId: '' })
+  const [editBrands, setEditBrands] = useState([])
+
+  useEffect(() => {
+    fetchProducts()
+  }, [filterCategory, filterBrandId])
+
+  useEffect(() => {
+    if (filterCategory) {
+      fetchFilterBrands(filterCategory)
+    } else {
+      setFilterBrands([])
+      setFilterBrandId('')
+    }
+  }, [filterCategory])
+
+  const fetchProducts = async () => {
+    setProductsLoading(true)
+    try {
+      const body = { grouped: false }
+      if (filterCategory) body.category = filterCategory
+      if (filterBrandId) body.brandIds = [filterBrandId]
+      const response = await api.post('/product/getProducts', body)
+      setProducts(response.data.data || [])
+    } catch (error) {
+      console.error('Failed to fetch products:', error)
+      setProducts([])
+    } finally {
+      setProductsLoading(false)
+    }
+  }
+
+  const fetchFilterBrands = async (category) => {
+    try {
+      const response = await api.post('/product/getBrandByCategory', { category })
+      setFilterBrands(response.data.data || [])
+    } catch (error) {
+      setFilterBrands([])
+    }
+  }
+
+  const clearFilters = () => {
+    setFilterCategory('')
+    setFilterBrandId('')
+    setSearchTerm('')
+  }
+
+  const filteredProducts = products.filter((item) => {
+    if (!searchTerm) return true
+    const nameMatch = item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const brandMatch = item.brand?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    return nameMatch || brandMatch
+  })
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(filteredProducts.map((p) => p._id))
+    } else {
+      setSelectedIds([])
+    }
+  }
+
+  const handleSelectOne = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    )
+  }
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.length === 0) return
+    if (!window.confirm(`Delete ${selectedIds.length} product(s)?`)) return
+    try {
+      const response = await api.post('/product/deleteProducts', { ids: selectedIds })
+      if (response.data.status) {
+        setSnackbar({ open: true, message: response.data.message, severity: 'success' })
+        setSelectedIds([])
+        fetchProducts()
+      }
+    } catch (error) {
+      setSnackbar({ open: true, message: 'Failed to delete products', severity: 'error' })
+    }
+  }
+
+  const handleEditClick = async (product) => {
+    setEditForm({ name: product.name, category: product.category, brandId: product.brand?.brandId || '' })
+    setEditDialog({ open: true, product })
+    // Fetch brands for the category
+    try {
+      const response = await api.post('/product/getBrandByCategory', { category: product.category })
+      setEditBrands(response.data.data || [])
+    } catch {
+      setEditBrands([])
+    }
+  }
+
+  const handleEditCategoryChange = async (category) => {
+    setEditForm((prev) => ({ ...prev, category, brandId: '' }))
+    try {
+      const response = await api.post('/product/getBrandByCategory', { category })
+      setEditBrands(response.data.data || [])
+    } catch {
+      setEditBrands([])
+    }
+  }
+
+  const handleEditSave = async () => {
+    try {
+      const response = await api.post('/product/updateProduct', {
+        id: editDialog.product._id,
+        ...editForm
+      })
+      if (response.data.status) {
+        setSnackbar({ open: true, message: 'Product updated successfully', severity: 'success' })
+        setEditDialog({ open: false, product: null })
+        fetchProducts()
+      } else {
+        setSnackbar({ open: true, message: response.data.message, severity: 'error' })
+      }
+    } catch (error) {
+      setSnackbar({ open: true, message: 'Failed to update product', severity: 'error' })
+    }
+  }
 
   useEffect(() => {
     if (selectedCategory) {
@@ -450,6 +600,242 @@ function Admin() {
             {loading ? 'Adding Product...' : 'Add Product'}
           </Button>
         </Paper>
+
+        {/* Products List Section */}
+        <Box sx={{ mt: 6, mb: 4 }}>
+          <Typography
+            variant="h4"
+            sx={{
+              color: '#1e293b',
+              fontWeight: 800,
+              letterSpacing: '-1px',
+              mb: 1,
+            }}
+          >
+            All Products
+          </Typography>
+          <Typography sx={{ color: '#64748b' }}>
+            View and filter all products in the database
+          </Typography>
+        </Box>
+
+        {/* Filters */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            bgcolor: 'white',
+            borderRadius: '16px',
+            border: '1px solid #e2e8f0',
+            mb: 3,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <FilterListIcon sx={{ color: '#6366f1', fontSize: 20 }} />
+            <Typography sx={{ color: '#374151', fontWeight: 600 }}>Filters</Typography>
+            {(filterCategory || filterBrandId || searchTerm) && (
+              <Button
+                size="small"
+                startIcon={<ClearIcon />}
+                onClick={clearFilters}
+                sx={{ ml: 'auto', color: '#64748b', textTransform: 'none' }}
+              >
+                Clear all
+              </Button>
+            )}
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+            {/* Search */}
+            <TextField
+              size="small"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              sx={{ minWidth: 200 }}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: '#94a3b8', fontSize: 20 }} />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+            {/* Category Filter */}
+            <FormControl size="small" sx={{ minWidth: 150 }}>
+              <Select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                displayEmpty
+                sx={{ bgcolor: '#f8fafc', borderRadius: '8px' }}
+              >
+                <MenuItem value="">All Categories</MenuItem>
+                {CATEGORIES.map((cat) => (
+                  <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {/* Brand Filter */}
+            <FormControl size="small" sx={{ minWidth: 150 }}>
+              <Select
+                value={filterBrandId}
+                onChange={(e) => setFilterBrandId(e.target.value)}
+                displayEmpty
+                disabled={!filterCategory}
+                sx={{ bgcolor: '#f8fafc', borderRadius: '8px' }}
+              >
+                <MenuItem value="">All Brands</MenuItem>
+                {filterBrands.map((brand) => (
+                  <MenuItem key={brand.brandId} value={brand.brandId}>{brand.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+        </Paper>
+
+        {/* Stats & Actions */}
+        <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Chip
+            label={`${filteredProducts.length} products`}
+            size="small"
+            sx={{ bgcolor: '#eef2ff', color: '#6366f1', fontWeight: 600 }}
+          />
+          {selectedIds.length > 0 && (
+            <Button
+              size="small"
+              color="error"
+              variant="contained"
+              startIcon={<DeleteIcon />}
+              onClick={handleDeleteSelected}
+              sx={{ ml: 'auto', textTransform: 'none', borderRadius: '8px' }}
+            >
+              Delete {selectedIds.length} selected
+            </Button>
+          )}
+        </Box>
+
+        {/* Products Table */}
+        {productsLoading ? (
+          <Paper elevation={0} sx={{ p: 6, textAlign: 'center', bgcolor: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+            <CircularProgress size={32} />
+            <Typography sx={{ color: '#64748b', mt: 2 }}>Loading products...</Typography>
+          </Paper>
+        ) : filteredProducts.length === 0 ? (
+          <Paper elevation={0} sx={{ p: 6, textAlign: 'center', bgcolor: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+            <Typography sx={{ color: '#64748b' }}>No products found</Typography>
+          </Paper>
+        ) : (
+          <TableContainer component={Paper} elevation={0} sx={{ borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f8fafc' }}>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectedIds.length === filteredProducts.length && filteredProducts.length > 0}
+                      indeterminate={selectedIds.length > 0 && selectedIds.length < filteredProducts.length}
+                      onChange={handleSelectAll}
+                    />
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 700, color: '#374151' }}>Product Name</TableCell>
+                  <TableCell sx={{ fontWeight: 700, color: '#374151' }}>Brand</TableCell>
+                  <TableCell sx={{ fontWeight: 700, color: '#374151' }}>Category</TableCell>
+                  <TableCell sx={{ fontWeight: 700, color: '#374151' }} align="center">Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredProducts.map((item) => (
+                  <TableRow key={item._id} sx={{ '&:hover': { bgcolor: '#f8fafc' } }}>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={selectedIds.includes(item._id)}
+                        onChange={() => handleSelectOne(item._id)}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Typography sx={{ fontWeight: 600, color: '#1e293b' }}>
+                        {item.name}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Chip label={item.brand?.name || '-'} size="small" sx={{ bgcolor: '#f1f5f9' }} />
+                    </TableCell>
+                    <TableCell>
+                      <Chip label={item.category} size="small" sx={{ bgcolor: '#eef2ff', color: '#6366f1' }} />
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton size="small" onClick={() => handleEditClick(item)} sx={{ color: '#6366f1' }}>
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          if (window.confirm('Delete this product?')) {
+                            api.post('/product/deleteProducts', { ids: [item._id] }).then(() => {
+                              setSnackbar({ open: true, message: 'Product deleted', severity: 'success' })
+                              fetchProducts()
+                            })
+                          }
+                        }}
+                        sx={{ color: '#ef4444' }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
+        {/* Edit Dialog */}
+        <Dialog open={editDialog.open} onClose={() => setEditDialog({ open: false, product: null })} maxWidth="sm" fullWidth>
+          <DialogTitle sx={{ fontWeight: 700 }}>Edit Product</DialogTitle>
+          <DialogContent>
+            <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <TextField
+                label="Product Name"
+                fullWidth
+                value={editForm.name}
+                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+              />
+              <FormControl fullWidth>
+                <Select
+                  value={editForm.category}
+                  onChange={(e) => handleEditCategoryChange(e.target.value)}
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>Select Category</MenuItem>
+                  {CATEGORIES.map((cat) => (
+                    <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <Select
+                  value={editForm.brandId}
+                  onChange={(e) => setEditForm({ ...editForm, brandId: e.target.value })}
+                  displayEmpty
+                  disabled={!editForm.category}
+                >
+                  <MenuItem value="" disabled>Select Brand</MenuItem>
+                  {editBrands.map((brand) => (
+                    <MenuItem key={brand.brandId} value={brand.brandId}>{brand.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 3 }}>
+            <Button onClick={() => setEditDialog({ open: false, product: null })} sx={{ textTransform: 'none' }}>
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={handleEditSave} sx={{ textTransform: 'none', bgcolor: '#6366f1' }}>
+              Save Changes
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
 
       {/* Snackbar for notifications */}

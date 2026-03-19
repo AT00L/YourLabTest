@@ -9,6 +9,10 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       port: 8001,
+      hmr: true,
+      watch: {
+        usePolling: true,
+      },
     },
     define: {
       'process.env': JSON.stringify(env),

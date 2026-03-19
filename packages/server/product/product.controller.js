@@ -1,8 +1,26 @@
 import express from "express";
-import { addProduct, getBrandByCategory, createBrand } from "./product.service.js";
+import { addProduct, getBrandByCategory, createBrand, getProducts, deleteProducts, updateProduct } from "./product.service.js";
 const router = express.Router();
 
 router.use(express.json())
+
+router.post("/getProducts", async (req, res) => {
+    const { category, brandIds, grouped } = req.body
+    const response = await getProducts({ category, brandIds, grouped })
+    res.json(response)
+})
+
+router.post("/deleteProducts", async (req, res) => {
+    const { ids } = req.body
+    const response = await deleteProducts(ids)
+    res.json(response)
+})
+
+router.post("/updateProduct", async (req, res) => {
+    const { id, name, category, brandId } = req.body
+    const response = await updateProduct({ id, name, category, brandId })
+    res.json(response)
+})
 
 router.post("/addProduct", async (req, res) => {
     const { name, category, brandId } = req.body
