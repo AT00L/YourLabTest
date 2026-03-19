@@ -7,6 +7,9 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
     plugins: [react()],
+    server: {
+      port: 8001,
+    },
     define: {
       'process.env': JSON.stringify(env),
     },

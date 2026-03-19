@@ -81,7 +81,7 @@ function Admin() {
         formData.append('image', productImage)
       }
 
-      await api.post('/api/products', formData)
+      await api.post('/product/addProduct', formData)
 
       setSnackbar({ open: true, message: 'Product created successfully!', severity: 'success' })
       setProductName('')
