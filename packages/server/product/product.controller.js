@@ -1,14 +1,24 @@
 import express from "express";
-import { getBrandCategoriesWise } from "./product.service";
+import { addProduct, getBrandByCategory, createBrand } from "./product.service.js";
 const router = express.Router();
 
-router.post("/addProduct",(req,res)=>{
-    console.log(req)
-    res.json({})
+router.use(express.json())
+
+router.post("/addProduct", async (req, res) => {
+    const { name, category, brand } = req.body
+    const response = await addProduct({ name, category, brand })
+    res.json(response)
 })
 
-router.post("/getBrandByCategory",async (req,res)=>{
-    const response = await getBrandByCategory({...req.body})
+router.post("/getBrandByCategory", async (req, res) => {
+    const { category } = req.body
+    const response = await getBrandByCategory(category)
+    res.json(response)
+})
+
+router.post("/createBrand", async (req, res) => {
+    const { name, category } = req.body
+    const response = await createBrand({ name, category })
     res.json(response)
 })
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from './api'
 import {
@@ -9,55 +9,87 @@ import {
   Button,
   Paper,
   Chip,
-  IconButton,
   Alert,
   Snackbar,
   FormControl,
   Select,
   MenuItem,
   OutlinedInput,
+  CircularProgress,
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import ScienceIcon from '@mui/icons-material/Science'
 
 const CATEGORIES = [
   'Protein',
+  'Creatine',
+  'Pre-Workout',
+  'BCAA',
+  'Vitamins',
 ]
 
 function Admin() {
   const navigate = useNavigate()
   const [productName, setProductName] = useState('')
-  const [productImage, setProductImage] = useState(null)
-  const [imagePreview, setImagePreview] = useState(null)
-  const [selectedCategories, setSelectedCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [brands, setBrands] = useState([])
+  const [selectedBrand, setSelectedBrand] = useState('')
+  const [newBrandName, setNewBrandName] = useState('')
+  const [showNewBrandInput, setShowNewBrandInput] = useState(false)
+  const [brandsLoading, setBrandsLoading] = useState(false)
   const [loading, setLoading] = useState(false)
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' })
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setProductImage(file)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImagePreview(reader.result)
-      }
-      reader.readAsDataURL(file)
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchBrands(selectedCategory)
+    } else {
+      setBrands([])
+      setSelectedBrand('')
+    }
+  }, [selectedCategory])
+
+  const fetchBrands = async (category) => {
+    setBrandsLoading(true)
+    try {
+      const response = await api.post('/product/getBrandByCategory', { category })
+      setBrands(response.data.data || [])
+    } catch (error) {
+      console.error('Failed to fetch brands:', error)
+      setBrands([])
+    } finally {
+      setBrandsLoading(false)
     }
   }
 
-  const handleRemoveImage = () => {
-    setProductImage(null)
-    setImagePreview(null)
+  const handleCreateBrand = async () => {
+    if (!newBrandName.trim()) {
+      setSnackbar({ open: true, message: 'Please enter a brand name', severity: 'error' })
+      return
+    }
+    try {
+      const response = await api.post('/product/createBrand', {
+        name: newBrandName.trim(),
+        category: selectedCategory
+      })
+      if (response.data.status) {
+        setSnackbar({ open: true, message: 'Brand created successfully!', severity: 'success' })
+        setNewBrandName('')
+        setShowNewBrandInput(false)
+        fetchBrands(selectedCategory)
+      } else {
+        setSnackbar({ open: true, message: response.data.message, severity: 'error' })
+      }
+    } catch (error) {
+      setSnackbar({ open: true, message: 'Failed to create brand', severity: 'error' })
+    }
   }
 
   const handleCategoryChange = (event) => {
-    const {
-      target: { value },
-    } = event
-    setSelectedCategories(typeof value === 'string' ? value.split(',') : value)
+    setSelectedCategory(event.target.value)
+    setSelectedBrand('')
+    setShowNewBrandInput(false)
   }
 
   const handleSubmit = async () => {
@@ -66,28 +98,29 @@ function Admin() {
       return
     }
 
-    if (selectedCategories.length === 0) {
-      setSnackbar({ open: true, message: 'Please select at least one category', severity: 'error' })
+    if (!selectedCategory) {
+      setSnackbar({ open: true, message: 'Please select a category', severity: 'error' })
+      return
+    }
+
+    if (!selectedBrand) {
+      setSnackbar({ open: true, message: 'Please select a brand', severity: 'error' })
       return
     }
 
     setLoading(true)
 
     try {
-      const formData = new FormData()
-      formData.append('name', productName)
-      formData.append('categories', JSON.stringify(selectedCategories))
-      if (productImage) {
-        formData.append('image', productImage)
-      }
-
-      await api.post('/product/addProduct', formData)
+      await api.post('/product/addProduct', {
+        name: productName,
+        category: selectedCategory,
+        brand: selectedBrand
+      })
 
       setSnackbar({ open: true, message: 'Product created successfully!', severity: 'success' })
       setProductName('')
-      setProductImage(null)
-      setImagePreview(null)
-      setSelectedCategories([])
+      setSelectedCategory('')
+      setSelectedBrand('')
     } catch (error) {
       setSnackbar({ open: true, message: error.message || 'Failed to create product', severity: 'error' })
     } finally {
@@ -216,104 +249,17 @@ function Admin() {
             />
           </Box>
 
-          {/* Product Image */}
-          <Box sx={{ mb: 4 }}>
-            <Typography sx={{ color: '#374151', fontWeight: 600, mb: 1.5 }}>
-              Product Image
-            </Typography>
-            {!imagePreview ? (
-              <Box
-                component="label"
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  p: 4,
-                  bgcolor: '#f8fafc',
-                  border: '2px dashed #e2e8f0',
-                  borderRadius: '12px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  '&:hover': {
-                    borderColor: '#6366f1',
-                    bgcolor: '#f1f5f9',
-                  },
-                }}
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={handleImageChange}
-                />
-                <CloudUploadIcon sx={{ fontSize: 48, color: '#94a3b8', mb: 2 }} />
-                <Typography sx={{ color: '#64748b', fontWeight: 500 }}>
-                  Click to upload image
-                </Typography>
-                <Typography sx={{ color: '#94a3b8', fontSize: '0.85rem', mt: 0.5 }}>
-                  PNG, JPG up to 5MB
-                </Typography>
-              </Box>
-            ) : (
-              <Box sx={{ position: 'relative', display: 'inline-block' }}>
-                <Box
-                  component="img"
-                  src={imagePreview}
-                  alt="Product preview"
-                  sx={{
-                    maxWidth: '100%',
-                    maxHeight: 300,
-                    borderRadius: '12px',
-                    border: '1px solid #e2e8f0',
-                  }}
-                />
-                <IconButton
-                  onClick={handleRemoveImage}
-                  sx={{
-                    position: 'absolute',
-                    top: 8,
-                    right: 8,
-                    bgcolor: '#ef4444',
-                    color: 'white',
-                    '&:hover': {
-                      bgcolor: '#dc2626',
-                    },
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
-            )}
-          </Box>
-
-          {/* Product Categories */}
+          {/* Category */}
           <Box sx={{ mb: 4 }}>
             <Typography sx={{ color: '#374151', fontWeight: 600, mb: 1.5 }}>
               Category *
             </Typography>
             <FormControl fullWidth>
               <Select
-                multiple
-                value={selectedCategories}
+                value={selectedCategory}
                 onChange={handleCategoryChange}
+                displayEmpty
                 input={<OutlinedInput />}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((value) => (
-                      <Chip
-                        key={value}
-                        label={value}
-                        size="small"
-                        sx={{
-                          bgcolor: '#eef2ff',
-                          color: '#6366f1',
-                          fontWeight: 500,
-                        }}
-                      />
-                    ))}
-                  </Box>
-                )}
                 sx={{
                   bgcolor: '#f8fafc',
                   borderRadius: '10px',
@@ -326,9 +272,6 @@ function Admin() {
                   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                     borderColor: '#6366f1',
                   },
-                  '& .MuiSvgIcon-root': {
-                    color: '#64748b',
-                  },
                 }}
                 MenuProps={{
                   PaperProps: {
@@ -337,21 +280,13 @@ function Admin() {
                       border: '1px solid #e2e8f0',
                       borderRadius: '10px',
                       boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
-                      '& .MuiMenuItem-root': {
-                        '&:hover': {
-                          bgcolor: '#f1f5f9',
-                        },
-                        '&.Mui-selected': {
-                          bgcolor: '#eef2ff',
-                          '&:hover': {
-                            bgcolor: '#e0e7ff',
-                          },
-                        },
-                      },
                     },
                   },
                 }}
               >
+                <MenuItem value="" disabled>
+                  <Typography sx={{ color: '#94a3b8' }}>Select a category</Typography>
+                </MenuItem>
                 {CATEGORIES.map((category) => (
                   <MenuItem key={category} value={category}>
                     {category}
@@ -360,6 +295,132 @@ function Admin() {
               </Select>
             </FormControl>
           </Box>
+
+          {/* Brand - Only show when category is selected */}
+          {selectedCategory && (
+            <Box sx={{ mb: 4 }}>
+              <Typography sx={{ color: '#374151', fontWeight: 600, mb: 1.5 }}>
+                Brand *
+              </Typography>
+              {brandsLoading ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, bgcolor: '#f8fafc', borderRadius: '10px' }}>
+                  <CircularProgress size={20} />
+                  <Typography sx={{ color: '#64748b' }}>Loading brands...</Typography>
+                </Box>
+              ) : (
+                <>
+                  <FormControl fullWidth>
+                    <Select
+                      value={selectedBrand}
+                      onChange={(e) => setSelectedBrand(e.target.value)}
+                      displayEmpty
+                      input={<OutlinedInput />}
+                      sx={{
+                        bgcolor: '#f8fafc',
+                        borderRadius: '10px',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#e2e8f0',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#cbd5e1',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#6366f1',
+                        },
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          sx: {
+                            bgcolor: 'white',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: '10px',
+                            boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                          },
+                        },
+                      }}
+                    >
+                      <MenuItem value="" disabled>
+                        <Typography sx={{ color: '#94a3b8' }}>Select a brand</Typography>
+                      </MenuItem>
+                      {brands.map((brand) => (
+                        <MenuItem key={brand._id} value={brand.name}>
+                          {brand.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  {/* Create new brand */}
+                  {!showNewBrandInput ? (
+                    <Button
+                      startIcon={<AddIcon />}
+                      onClick={() => setShowNewBrandInput(true)}
+                      sx={{
+                        mt: 1.5,
+                        color: '#6366f1',
+                        textTransform: 'none',
+                        fontWeight: 500,
+                        '&:hover': {
+                          bgcolor: '#eef2ff',
+                        },
+                      }}
+                    >
+                      Create new brand
+                    </Button>
+                  ) : (
+                    <Box sx={{ mt: 2, p: 2, bgcolor: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                      <Typography sx={{ color: '#374151', fontWeight: 600, mb: 1.5, fontSize: '0.9rem' }}>
+                        New Brand for {selectedCategory}
+                      </Typography>
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          placeholder="Enter brand name"
+                          value={newBrandName}
+                          onChange={(e) => setNewBrandName(e.target.value)}
+                          sx={{
+                            '& .MuiOutlinedInput-root': {
+                              bgcolor: 'white',
+                              borderRadius: '8px',
+                            },
+                          }}
+                        />
+                        <Button
+                          variant="contained"
+                          onClick={handleCreateBrand}
+                          sx={{
+                            bgcolor: '#6366f1',
+                            textTransform: 'none',
+                            borderRadius: '8px',
+                            px: 3,
+                            '&:hover': {
+                              bgcolor: '#4f46e5',
+                            },
+                          }}
+                        >
+                          Add
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setShowNewBrandInput(false)
+                            setNewBrandName('')
+                          }}
+                          sx={{
+                            color: '#64748b',
+                            textTransform: 'none',
+                            borderRadius: '8px',
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+                </>
+              )}
+            </Box>
+          )}
 
           {/* Submit Button */}
           <Button
