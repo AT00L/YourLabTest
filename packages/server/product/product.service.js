@@ -120,6 +120,27 @@ function toBrandId(str) {
     return str.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '')
 }
 
+export async function getCategories() {
+    const db = await mongoInatialize()
+    const categories = await db.collection("products").distinct("category")
+    return {
+        status: true,
+        data: categories
+    }
+}
+
+export async function voteProduct(productId) {
+    const db = await mongoInatialize()
+    const result = await db.collection("products").updateOne(
+        { _id: new ObjectId(productId) },
+        { $inc: { votes: 1 } }
+    )
+    if (result.matchedCount === 0) {
+        return { status: false, message: "Product not found" }
+    }
+    return { status: true, message: "Vote recorded" }
+}
+
 export async function createBrand({ name, category }) {
     const db = await mongoInatialize()
     const brandName = toTitleCase(name.trim())

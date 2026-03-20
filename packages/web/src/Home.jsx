@@ -9,33 +9,76 @@ import {
   InputAdornment,
   Paper,
   Button,
-  Avatar,
-  IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Grid,
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import GroupsIcon from '@mui/icons-material/Groups'
 import ScienceIcon from '@mui/icons-material/Science'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import ShieldIcon from '@mui/icons-material/Shield'
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
+import FilterListIcon from '@mui/icons-material/FilterList'
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedBrand, setSelectedBrand] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [selectedBrand, setSelectedBrand] = useState('')
   const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
+  const [brands, setBrands] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    fetchCategories()
     fetchProducts()
   }, [])
+
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchBrands(selectedCategory)
+      fetchProducts(selectedCategory)
+    } else {
+      setBrands([])
+      setSelectedBrand('')
+      fetchProducts()
+    }
+  }, [selectedCategory])
+
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchProducts(selectedCategory, selectedBrand ? [selectedBrand] : [])
+    }
+  }, [selectedBrand, selectedCategory])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/product/getCategories')
+      setCategories(response.data.data || [])
+    } catch (error) {
+      console.error('Failed to fetch categories:', error)
+    }
+  }
+
+  const fetchBrands = async (category) => {
+    try {
+      const response = await api.post('/product/getBrandByCategory', { category })
+      setBrands(response.data.data || [])
+    } catch (error) {
+      console.error('Failed to fetch brands:', error)
+    }
+  }
 
   const fetchProducts = async (category, brandIds) => {
     setLoading(true)
     try {
-      const body = {}
+      const body = { grouped: false }
       if (category) body.category = category
       if (brandIds && brandIds.length > 0) body.brandIds = brandIds
       const response = await api.post('/product/getProducts', body)
@@ -48,14 +91,22 @@ function Home() {
     }
   }
 
+  const handleVote = async (productId) => {
+    try {
+      await api.post('/product/voteProduct', { productId })
+      setProducts(products.map(p =>
+        p._id === productId ? { ...p, votes: (p.votes || 0) + 1 } : p
+      ))
+    } catch (error) {
+      console.error('Failed to vote:', error)
+    }
+  }
+
   const filteredProducts = products.filter((item) => {
-    const brandMatch = item.brandId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.displayName.toLowerCase().includes(searchTerm.toLowerCase())
-    const productMatch = item.products.some((product) =>
-      product.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    return brandMatch || productMatch
-  })
+    const nameMatch = item.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    const brandMatch = item.brand?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+    return nameMatch || brandMatch
+  }).sort((a, b) => (b.votes || 0) - (a.votes || 0))
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f8fafc' }}>
@@ -134,14 +185,13 @@ function Home() {
         sx={{
           position: 'relative',
           overflow: 'hidden',
-          pt: 10,
-          pb: 12,
+          pt: 8,
+          pb: 8,
           bgcolor: 'white',
         }}
       >
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
           <Box sx={{ textAlign: 'center', maxWidth: 800, mx: 'auto' }}>
-            {/* Trust badge */}
             <Chip
               icon={<ShieldIcon sx={{ fontSize: 16 }} />}
               label="Community-Funded Lab Testing"
@@ -158,7 +208,7 @@ function Home() {
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: '2.5rem', md: '4rem' },
+                fontSize: { xs: '2.5rem', md: '3.5rem' },
                 fontWeight: 900,
                 color: '#1e293b',
                 lineHeight: 1.1,
@@ -178,8 +228,7 @@ function Home() {
               >
                 Really Inside
               </Box>
-              <br />
-              Your Supplements
+              {' '}Your Supplements
             </Typography>
 
             <Typography
@@ -187,7 +236,7 @@ function Home() {
               sx={{
                 color: '#64748b',
                 fontWeight: 400,
-                mb: 5,
+                mb: 4,
                 maxWidth: 600,
                 mx: 'auto',
                 lineHeight: 1.6,
@@ -197,50 +246,7 @@ function Home() {
               Vote for products, fund the tests, get unbiased results.
             </Typography>
 
-            {/* CTA Buttons */}
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mb: 6 }}>
-              <Button
-                variant="contained"
-                size="large"
-                endIcon={<KeyboardArrowRightIcon />}
-                sx={{
-                  bgcolor: '#6366f1',
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  borderRadius: '100px',
-                  px: 4,
-                  py: 1.5,
-                  fontSize: '1rem',
-                  boxShadow: '0 1px 3px rgba(99, 102, 241, 0.3)',
-                  '&:hover': {
-                    bgcolor: '#4f46e5',
-                  },
-                }}
-              >
-                Start Voting
-              </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                sx={{
-                  borderColor: '#e2e8f0',
-                  color: '#475569',
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  borderRadius: '100px',
-                  px: 4,
-                  py: 1.5,
-                  '&:hover': {
-                    borderColor: '#cbd5e1',
-                    bgcolor: '#f8fafc',
-                  },
-                }}
-              >
-                View Results
-              </Button>
-            </Box>
-
-            {/* Stats - Real data from protein list */}
+            {/* Stats */}
             <Box
               sx={{
                 display: 'flex',
@@ -250,8 +256,8 @@ function Home() {
               }}
             >
               {[
-                { value: `${products.length}`, label: 'Brands Listed', icon: <LocalFireDepartmentIcon sx={{ fontSize: 18 }} /> },
-                { value: `${products.reduce((acc, item) => acc + item.products.length, 0)}`, label: 'Products', icon: <AutoAwesomeIcon sx={{ fontSize: 18 }} /> },
+                { value: `${products.length}`, label: 'Products', icon: <LocalFireDepartmentIcon sx={{ fontSize: 18 }} /> },
+                { value: `${categories.length}`, label: 'Categories', icon: <AutoAwesomeIcon sx={{ fontSize: 18 }} /> },
                 { value: '100%', label: 'Transparent', icon: <VerifiedIcon sx={{ fontSize: 18 }} /> },
               ].map((stat, i) => (
                 <Box key={i} sx={{ textAlign: 'center' }}>
@@ -275,7 +281,7 @@ function Home() {
       </Box>
 
       {/* Trust Features */}
-      <Container maxWidth="lg" sx={{ py: 6 }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box
           sx={{
             display: 'grid',
@@ -349,63 +355,132 @@ function Home() {
       </Container>
 
       {/* Products Section */}
-      <Container maxWidth="lg" sx={{ py: 6 }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <TrendingUpIcon sx={{ color: '#6366f1', fontSize: 20 }} />
             <Typography sx={{ color: '#6366f1', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: 1 }}>
-              Trending Now
+              Vote Now
             </Typography>
           </Box>
           <Typography variant="h4" sx={{ color: '#1e293b', fontWeight: 800, letterSpacing: '-1px', mb: 1 }}>
-            Whey Protein Testing Queue
+            Product Testing Queue
           </Typography>
           <Typography sx={{ color: '#64748b', maxWidth: 500 }}>
             Vote for the products you want tested. Top voted products get tested first.
           </Typography>
         </Box>
 
-        {/* Search */}
-        <TextField
-          fullWidth
-          placeholder="Search brands or products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+        {/* Filters */}
+        <Paper
+          elevation={0}
           sx={{
+            p: 3,
             mb: 4,
-            maxWidth: 500,
-            '& .MuiOutlinedInput-root': {
-              bgcolor: 'white',
-              borderRadius: '100px',
-              '& fieldset': {
-                borderColor: '#e2e8f0',
-              },
-              '&:hover fieldset': {
-                borderColor: '#cbd5e1',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#6366f1',
-              },
-            },
-            '& .MuiInputBase-input::placeholder': {
-              color: '#94a3b8',
-            },
+            bgcolor: 'white',
+            borderRadius: '16px',
+            border: '1px solid #e2e8f0',
           }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: '#94a3b8' }} />
-                </InputAdornment>
-              ),
-            },
-          }}
-        />
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <FilterListIcon sx={{ color: '#6366f1' }} />
+            <Typography sx={{ fontWeight: 600, color: '#1e293b' }}>Filters</Typography>
+          </Box>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <TextField
+                fullWidth
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                size="small"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon sx={{ color: '#94a3b8' }} />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '10px',
+                  },
+                }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Category</InputLabel>
+                <Select
+                  value={selectedCategory}
+                  onChange={(e) => {
+                    setSelectedCategory(e.target.value)
+                    setSelectedBrand('')
+                  }}
+                  label="Category"
+                  sx={{ borderRadius: '10px' }}
+                >
+                  <MenuItem value="">All Categories</MenuItem>
+                  {categories.map((cat) => (
+                    <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+              <FormControl fullWidth size="small" disabled={!selectedCategory}>
+                <InputLabel>Brand</InputLabel>
+                <Select
+                  value={selectedBrand}
+                  onChange={(e) => setSelectedBrand(e.target.value)}
+                  label="Brand"
+                  sx={{ borderRadius: '10px' }}
+                >
+                  <MenuItem value="">All Brands</MenuItem>
+                  {brands.map((brand) => (
+                    <MenuItem key={brand.brandId} value={brand.brandId}>{brand.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Paper>
+
+        {/* Category Chips */}
+        {categories.length > 0 && (
+          <Box sx={{ mb: 3, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            <Chip
+              label="All"
+              onClick={() => setSelectedCategory('')}
+              sx={{
+                bgcolor: !selectedCategory ? '#6366f1' : '#eef2ff',
+                color: !selectedCategory ? 'white' : '#6366f1',
+                fontWeight: 600,
+                '&:hover': { bgcolor: !selectedCategory ? '#4f46e5' : '#e0e7ff' },
+              }}
+            />
+            {categories.map((cat) => (
+              <Chip
+                key={cat}
+                label={cat}
+                onClick={() => setSelectedCategory(cat)}
+                sx={{
+                  bgcolor: selectedCategory === cat ? '#6366f1' : '#eef2ff',
+                  color: selectedCategory === cat ? 'white' : '#6366f1',
+                  fontWeight: 600,
+                  '&:hover': { bgcolor: selectedCategory === cat ? '#4f46e5' : '#e0e7ff' },
+                }}
+              />
+            ))}
+          </Box>
+        )}
 
         {/* Results count */}
         <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Chip
-            label={`${filteredProducts.length} brands`}
+            label={`${filteredProducts.length} products`}
             size="small"
             sx={{
               bgcolor: '#eef2ff',
@@ -413,18 +488,9 @@ function Home() {
               fontWeight: 600,
             }}
           />
-          <Chip
-            label={`${filteredProducts.reduce((acc, item) => acc + item.products.length, 0)} products`}
-            size="small"
-            sx={{
-              bgcolor: '#fdf2f8',
-              color: '#db2777',
-              fontWeight: 600,
-            }}
-          />
         </Box>
 
-        {/* Brand Cards Grid */}
+        {/* Products Grid */}
         {loading ? (
           <Paper
             elevation={0}
@@ -439,113 +505,88 @@ function Home() {
             <Typography sx={{ color: '#64748b' }}>Loading products...</Typography>
           </Paper>
         ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
-            gap: 2,
-          }}
-        >
-          {filteredProducts.map((item) => (
-            <Paper
-              key={item.brandId}
-              elevation={0}
-              onClick={() => setSelectedBrand(selectedBrand === item.brandId ? null : item.brandId)}
-              sx={{
-                p: 2.5,
-                bgcolor: selectedBrand === item.brandId ? '#eef2ff' : 'white',
-                borderRadius: '16px',
-                border: selectedBrand === item.brandId ? '1px solid #6366f1' : '1px solid #e2e8f0',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  borderColor: '#cbd5e1',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                },
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                <Avatar
+          <Grid container spacing={2}>
+            {filteredProducts.map((product) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product._id}>
+                <Paper
+                  elevation={0}
                   sx={{
-                    width: 52,
-                    height: 52,
-                    bgcolor: item.color,
-                    fontWeight: 800,
-                    fontSize: '1.3rem',
-                    borderRadius: '14px',
-                  }}
-                  variant="rounded"
-                >
-                  {item.displayName.charAt(0)}
-                </Avatar>
-                <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ color: '#1e293b', fontWeight: 700, fontSize: '1.1rem' }}>
-                    {item.displayName}
-                  </Typography>
-                  <Typography sx={{ color: '#64748b', fontSize: '0.85rem' }}>
-                    {item.products.length} products
-                  </Typography>
-                </Box>
-                <IconButton
-                  size="small"
-                  sx={{
-                    bgcolor: '#eef2ff',
-                    color: '#6366f1',
-                    '&:hover': { bgcolor: '#e0e7ff' },
+                    p: 2.5,
+                    bgcolor: 'white',
+                    borderRadius: '16px',
+                    border: '1px solid #e2e8f0',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      borderColor: '#cbd5e1',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                      transform: 'translateY(-2px)',
+                    },
                   }}
                 >
-                  <KeyboardArrowRightIcon
-                    sx={{
-                      transform: selectedBrand === item.brandId ? 'rotate(90deg)' : 'none',
-                      transition: 'transform 0.2s',
-                    }}
-                  />
-                </IconButton>
-              </Box>
-
-              {/* Products list - shown when expanded */}
-              {selectedBrand === item.brandId && (
-                <Box sx={{ mt: 2, pt: 2, borderTop: '1px solid #e2e8f0' }}>
-                  {item.products.map((product, idx) => (
-                    <Box
-                      key={product}
+                  <Box sx={{ flex: 1 }}>
+                    <Chip
+                      label={product.category}
+                      size="small"
                       sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        py: 1.5,
-                        borderBottom: idx < item.products.length - 1 ? '1px solid #f1f5f9' : 'none',
+                        bgcolor: '#f1f5f9',
+                        color: '#64748b',
+                        fontSize: '0.7rem',
+                        mb: 1.5,
+                        height: 22,
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        color: '#1e293b',
+                        fontWeight: 700,
+                        fontSize: '1rem',
+                        mb: 0.5,
+                        lineHeight: 1.3,
                       }}
                     >
-                      <Typography sx={{ color: '#1e293b', fontSize: '0.9rem', fontWeight: 500, flex: 1 }}>
-                        {product}
+                      {product.name}
+                    </Typography>
+                    <Typography sx={{ color: '#6366f1', fontSize: '0.85rem', fontWeight: 500 }}>
+                      {product.brand?.name}
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2, pt: 2, borderTop: '1px solid #f1f5f9' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <ThumbUpIcon sx={{ fontSize: 16, color: '#6366f1' }} />
+                      <Typography sx={{ fontWeight: 700, color: '#1e293b' }}>
+                        {product.votes || 0}
                       </Typography>
-                      <Button
-                        size="small"
-                        sx={{
-                          minWidth: 'auto',
-                          px: 2,
-                          py: 0.5,
-                          borderRadius: '100px',
-                          bgcolor: '#6366f1',
-                          color: 'white',
-                          textTransform: 'none',
-                          fontWeight: 600,
-                          fontSize: '0.8rem',
-                          '&:hover': {
-                            bgcolor: '#4f46e5',
-                          },
-                        }}
-                      >
-                        Vote
-                      </Button>
+                      <Typography sx={{ color: '#94a3b8', fontSize: '0.8rem' }}>votes</Typography>
                     </Box>
-                  ))}
-                </Box>
-              )}
-            </Paper>
-          ))}
-        </Box>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={() => handleVote(product._id)}
+                      sx={{
+                        minWidth: 'auto',
+                        px: 2,
+                        py: 0.5,
+                        borderRadius: '100px',
+                        bgcolor: '#6366f1',
+                        textTransform: 'none',
+                        fontWeight: 600,
+                        fontSize: '0.8rem',
+                        '&:hover': {
+                          bgcolor: '#4f46e5',
+                        },
+                      }}
+                    >
+                      Vote
+                    </Button>
+                  </Box>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
         )}
 
         {!loading && filteredProducts.length === 0 && (
@@ -560,14 +601,14 @@ function Home() {
             }}
           >
             <Typography sx={{ color: '#64748b' }}>
-              No products found matching "{searchTerm}"
+              No products found
             </Typography>
           </Paper>
         )}
       </Container>
 
       {/* CTA Section */}
-      <Box sx={{ py: 10 }}>
+      <Box sx={{ py: 8 }}>
         <Container maxWidth="md">
           <Paper
             elevation={0}
