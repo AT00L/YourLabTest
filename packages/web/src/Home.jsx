@@ -1,61 +1,58 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import api from './api'
 import {
   Container,
   Typography,
   Box,
   Chip,
-  TextField,
-  InputAdornment,
   Paper,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Grid,
 } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import GroupsIcon from '@mui/icons-material/Groups'
 import ScienceIcon from '@mui/icons-material/Science'
-import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import ShieldIcon from '@mui/icons-material/Shield'
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
-import ThumbUpIcon from '@mui/icons-material/ThumbUp'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
+import BoltIcon from '@mui/icons-material/Bolt'
+import RestaurantIcon from '@mui/icons-material/Restaurant'
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy'
+import SpaIcon from '@mui/icons-material/Spa'
+import CategoryIcon from '@mui/icons-material/Category'
+
+// Category icon mapping
+const categoryIcons = {
+  'Whey Protein': FitnessCenterIcon,
+  'Pre-Workout': BoltIcon,
+  'Creatine': ScienceIcon,
+  'BCAA': RestaurantIcon,
+  'Multivitamins': LocalPharmacyIcon,
+  'Fish Oil': SpaIcon,
+}
+
+const categoryColors = {
+  'Whey Protein': { bg: '#fef3c7', color: '#d97706', border: '#fcd34d' },
+  'Pre-Workout': { bg: '#fce7f3', color: '#db2777', border: '#f9a8d4' },
+  'Creatine': { bg: '#dbeafe', color: '#2563eb', border: '#93c5fd' },
+  'BCAA': { bg: '#d1fae5', color: '#059669', border: '#6ee7b7' },
+  'Multivitamins': { bg: '#ede9fe', color: '#7c3aed', border: '#c4b5fd' },
+  'Fish Oil': { bg: '#ffedd5', color: '#ea580c', border: '#fdba74' },
+}
 
 function Home() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [selectedBrand, setSelectedBrand] = useState('')
+  const navigate = useNavigate()
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
-  const [brands, setBrands] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchCategories()
     fetchProducts()
   }, [])
-
-  useEffect(() => {
-    if (selectedCategory) {
-      fetchBrands(selectedCategory)
-      fetchProducts(selectedCategory)
-    } else {
-      setBrands([])
-      setSelectedBrand('')
-      fetchProducts()
-    }
-  }, [selectedCategory])
-
-  useEffect(() => {
-    if (selectedCategory) {
-      fetchProducts(selectedCategory, selectedBrand ? [selectedBrand] : [])
-    }
-  }, [selectedBrand, selectedCategory])
 
   const fetchCategories = async () => {
     try {
@@ -66,22 +63,10 @@ function Home() {
     }
   }
 
-  const fetchBrands = async (category) => {
-    try {
-      const response = await api.post('/product/getBrandByCategory', { category })
-      setBrands(response.data.data || [])
-    } catch (error) {
-      console.error('Failed to fetch brands:', error)
-    }
-  }
-
-  const fetchProducts = async (category, brandIds) => {
+  const fetchProducts = async () => {
     setLoading(true)
     try {
-      const body = { grouped: false }
-      if (category) body.category = category
-      if (brandIds && brandIds.length > 0) body.brandIds = brandIds
-      const response = await api.post('/product/getProducts', body)
+      const response = await api.post('/product/getProducts', { grouped: false })
       setProducts(response.data.data || [])
     } catch (error) {
       console.error('Failed to fetch products:', error)
@@ -91,22 +76,14 @@ function Home() {
     }
   }
 
-  const handleVote = async (productId) => {
-    try {
-      await api.post('/product/voteProduct', { productId })
-      setProducts(products.map(p =>
-        p._id === productId ? { ...p, votes: (p.votes || 0) + 1 } : p
-      ))
-    } catch (error) {
-      console.error('Failed to vote:', error)
-    }
+  const handleCategoryClick = (category) => {
+    navigate(`/category/${encodeURIComponent(category)}`)
   }
 
-  const filteredProducts = products.filter((item) => {
-    const nameMatch = item.name?.toLowerCase().includes(searchTerm.toLowerCase())
-    const brandMatch = item.brand?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-    return nameMatch || brandMatch
-  }).sort((a, b) => (b.votes || 0) - (a.votes || 0))
+  // Get product count per category
+  const getProductCount = (category) => {
+    return products.filter(p => p.category === category).length
+  }
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f8fafc' }}>
@@ -354,143 +331,23 @@ function Home() {
         </Box>
       </Container>
 
-      {/* Products Section */}
+      {/* Categories Section */}
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <TrendingUpIcon sx={{ color: '#6366f1', fontSize: 20 }} />
+            <CategoryIcon sx={{ color: '#6366f1', fontSize: 20 }} />
             <Typography sx={{ color: '#6366f1', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: 1 }}>
-              Vote Now
+              Browse Categories
             </Typography>
           </Box>
           <Typography variant="h4" sx={{ color: '#1e293b', fontWeight: 800, letterSpacing: '-1px', mb: 1 }}>
-            Product Testing Queue
+            Select a Category
           </Typography>
           <Typography sx={{ color: '#64748b', maxWidth: 500 }}>
-            Vote for the products you want tested. Top voted products get tested first.
+            Choose a supplement category to view products and cast your vote.
           </Typography>
         </Box>
 
-        {/* Filters */}
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            mb: 4,
-            bgcolor: 'white',
-            borderRadius: '16px',
-            border: '1px solid #e2e8f0',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-            <FilterListIcon sx={{ color: '#6366f1' }} />
-            <Typography sx={{ fontWeight: 600, color: '#1e293b' }}>Filters</Typography>
-          </Box>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <TextField
-                fullWidth
-                placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                size="small"
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon sx={{ color: '#94a3b8' }} />
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '10px',
-                  },
-                }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Category</InputLabel>
-                <Select
-                  value={selectedCategory}
-                  onChange={(e) => {
-                    setSelectedCategory(e.target.value)
-                    setSelectedBrand('')
-                  }}
-                  label="Category"
-                  sx={{ borderRadius: '10px' }}
-                >
-                  <MenuItem value="">All Categories</MenuItem>
-                  {categories.map((cat) => (
-                    <MenuItem key={cat} value={cat}>{cat}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <FormControl fullWidth size="small" disabled={!selectedCategory}>
-                <InputLabel>Brand</InputLabel>
-                <Select
-                  value={selectedBrand}
-                  onChange={(e) => setSelectedBrand(e.target.value)}
-                  label="Brand"
-                  sx={{ borderRadius: '10px' }}
-                >
-                  <MenuItem value="">All Brands</MenuItem>
-                  {brands.map((brand) => (
-                    <MenuItem key={brand.brandId} value={brand.brandId}>{brand.name}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-        </Paper>
-
-        {/* Category Chips */}
-        {categories.length > 0 && (
-          <Box sx={{ mb: 3, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <Chip
-              label="All"
-              onClick={() => setSelectedCategory('')}
-              sx={{
-                bgcolor: !selectedCategory ? '#6366f1' : '#eef2ff',
-                color: !selectedCategory ? 'white' : '#6366f1',
-                fontWeight: 600,
-                '&:hover': { bgcolor: !selectedCategory ? '#4f46e5' : '#e0e7ff' },
-              }}
-            />
-            {categories.map((cat) => (
-              <Chip
-                key={cat}
-                label={cat}
-                onClick={() => setSelectedCategory(cat)}
-                sx={{
-                  bgcolor: selectedCategory === cat ? '#6366f1' : '#eef2ff',
-                  color: selectedCategory === cat ? 'white' : '#6366f1',
-                  fontWeight: 600,
-                  '&:hover': { bgcolor: selectedCategory === cat ? '#4f46e5' : '#e0e7ff' },
-                }}
-              />
-            ))}
-          </Box>
-        )}
-
-        {/* Results count */}
-        <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Chip
-            label={`${filteredProducts.length} products`}
-            size="small"
-            sx={{
-              bgcolor: '#eef2ff',
-              color: '#6366f1',
-              fontWeight: 600,
-            }}
-          />
-        </Box>
-
-        {/* Products Grid */}
         {loading ? (
           <Paper
             elevation={0}
@@ -502,94 +359,103 @@ function Home() {
               border: '1px solid #e2e8f0',
             }}
           >
-            <Typography sx={{ color: '#64748b' }}>Loading products...</Typography>
+            <Typography sx={{ color: '#64748b' }}>Loading categories...</Typography>
           </Paper>
         ) : (
-          <Grid container spacing={2}>
-            {filteredProducts.map((product) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product._id}>
-                <Paper
-                  elevation={0}
-                  sx={{
-                    p: 2.5,
-                    bgcolor: 'white',
-                    borderRadius: '16px',
-                    border: '1px solid #e2e8f0',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      borderColor: '#cbd5e1',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                      transform: 'translateY(-2px)',
-                    },
-                  }}
-                >
-                  <Box sx={{ flex: 1 }}>
-                    <Chip
-                      label={product.category}
-                      size="small"
-                      sx={{
-                        bgcolor: '#f1f5f9',
-                        color: '#64748b',
-                        fontSize: '0.7rem',
-                        mb: 1.5,
-                        height: 22,
-                      }}
-                    />
+          <Grid container spacing={3}>
+            {categories.map((category) => {
+              const IconComponent = categoryIcons[category] || CategoryIcon
+              const colors = categoryColors[category] || { bg: '#eef2ff', color: '#6366f1', border: '#c7d2fe' }
+              const productCount = getProductCount(category)
+
+              return (
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={category}>
+                  <Paper
+                    elevation={0}
+                    onClick={() => handleCategoryClick(category)}
+                    sx={{
+                      p: 3,
+                      bgcolor: 'white',
+                      borderRadius: '20px',
+                      border: '1px solid #e2e8f0',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        borderColor: colors.border,
+                        transform: 'translateY(-6px)',
+                        boxShadow: `0 12px 24px ${colors.bg}`,
+                        '& .arrow-icon': {
+                          transform: 'translateX(4px)',
+                        },
+                      },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+                      <Box
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          borderRadius: '16px',
+                          bgcolor: colors.bg,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <IconComponent sx={{ color: colors.color, fontSize: 28 }} />
+                      </Box>
+                      <Box
+                        className="arrow-icon"
+                        sx={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: '10px',
+                          bgcolor: '#f8fafc',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'transform 0.2s ease',
+                        }}
+                      >
+                        <ArrowForwardIcon sx={{ color: '#94a3b8', fontSize: 20 }} />
+                      </Box>
+                    </Box>
+
                     <Typography
+                      variant="h6"
                       sx={{
                         color: '#1e293b',
                         fontWeight: 700,
-                        fontSize: '1rem',
                         mb: 0.5,
-                        lineHeight: 1.3,
                       }}
                     >
-                      {product.name}
+                      {category}
                     </Typography>
-                    <Typography sx={{ color: '#6366f1', fontSize: '0.85rem', fontWeight: 500 }}>
-                      {product.brand?.name}
-                    </Typography>
-                  </Box>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2, pt: 2, borderTop: '1px solid #f1f5f9' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <ThumbUpIcon sx={{ fontSize: 16, color: '#6366f1' }} />
-                      <Typography sx={{ fontWeight: 700, color: '#1e293b' }}>
-                        {product.votes || 0}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Typography sx={{ color: '#64748b', fontSize: '0.9rem' }}>
+                        {productCount} products
                       </Typography>
-                      <Typography sx={{ color: '#94a3b8', fontSize: '0.8rem' }}>votes</Typography>
+                      <Chip
+                        label="Vote now"
+                        size="small"
+                        sx={{
+                          bgcolor: colors.bg,
+                          color: colors.color,
+                          fontSize: '0.7rem',
+                          fontWeight: 600,
+                          height: 22,
+                        }}
+                      />
                     </Box>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      onClick={() => handleVote(product._id)}
-                      sx={{
-                        minWidth: 'auto',
-                        px: 2,
-                        py: 0.5,
-                        borderRadius: '100px',
-                        bgcolor: '#6366f1',
-                        textTransform: 'none',
-                        fontWeight: 600,
-                        fontSize: '0.8rem',
-                        '&:hover': {
-                          bgcolor: '#4f46e5',
-                        },
-                      }}
-                    >
-                      Vote
-                    </Button>
-                  </Box>
-                </Paper>
-              </Grid>
-            ))}
+                  </Paper>
+                </Grid>
+              )
+            })}
           </Grid>
         )}
 
-        {!loading && filteredProducts.length === 0 && (
+        {!loading && categories.length === 0 && (
           <Paper
             elevation={0}
             sx={{
@@ -601,7 +467,7 @@ function Home() {
             }}
           >
             <Typography sx={{ color: '#64748b' }}>
-              No products found
+              No categories found
             </Typography>
           </Paper>
         )}

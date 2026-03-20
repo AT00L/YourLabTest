@@ -3,11 +3,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import Home from './Home.jsx'
 import Admin from './Admin.jsx'
+import CategoryPage from './CategoryPage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/category/:category" element={<CategoryPage />} />
       <Route path="/admin" element={<Admin />} />
     </Routes>
   </BrowserRouter>
