@@ -22,7 +22,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ScienceIcon from '@mui/icons-material/Science'
-import ThumbUpIcon from '@mui/icons-material/ThumbUp'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import FilterListIcon from '@mui/icons-material/FilterList'
 
 function CategoryPage() {
@@ -388,12 +388,12 @@ function CategoryPage() {
                                   }}
                                 >
                                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                    <ThumbUpIcon sx={{ fontSize: 16, color: '#6366f1' }} />
+                                    <FavoriteBorderIcon sx={{ fontSize: 16, color: '#6366f1' }} />
                                     <Typography sx={{ fontWeight: 700, color: '#1e293b' }}>
                                       {product.votes || 0}
                                     </Typography>
                                     <Typography sx={{ color: '#94a3b8', fontSize: '0.8rem' }}>
-                                      votes
+                                      interested
                                     </Typography>
                                   </Box>
                                   <Button
@@ -408,13 +408,13 @@ function CategoryPage() {
                                       bgcolor: '#6366f1',
                                       textTransform: 'none',
                                       fontWeight: 600,
-                                      fontSize: '0.8rem',
+                                      fontSize: '0.75rem',
                                       '&:hover': {
                                         bgcolor: '#4f46e5',
                                       },
                                     }}
                                   >
-                                    Vote
+                                    I'm Interested
                                   </Button>
                                 </Box>
                               </Paper>

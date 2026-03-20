@@ -130,11 +130,17 @@ function Home() {
               />
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Button sx={{ color: '#64748b', textTransform: 'none', fontWeight: 500 }}>
+              <Button
+                onClick={() => navigate('/how-it-works')}
+                sx={{ color: '#64748b', textTransform: 'none', fontWeight: 500 }}
+              >
                 How it Works
               </Button>
-              <Button sx={{ color: '#64748b', textTransform: 'none', fontWeight: 500 }}>
-                Leaderboard
+              <Button
+                onClick={() => navigate('/our-mission')}
+                sx={{ color: '#64748b', textTransform: 'none', fontWeight: 500 }}
+              >
+                Our Mission
               </Button>
               <Button
                 variant="contained"
@@ -220,7 +226,7 @@ function Home() {
               }}
             >
               India's first community-funded lab testing platform.
-              Vote for products, fund the tests, get unbiased results.
+              Show interest, pool contributions, get unbiased lab results.
             </Typography>
 
             {/* Stats */}
@@ -437,7 +443,7 @@ function Home() {
                         {productCount} products
                       </Typography>
                       <Chip
-                        label="Vote now"
+                        label="Show interest"
                         size="small"
                         sx={{
                           bgcolor: colors.bg,
@@ -539,7 +545,7 @@ function Home() {
               </Typography>
             </Box>
             <Typography sx={{ color: '#64748b', fontSize: '0.85rem' }}>
-              Made with transparency for the fitness community
+              For the change, be the change.
             </Typography>
           </Box>
         </Container>
